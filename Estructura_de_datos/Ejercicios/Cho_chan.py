@@ -35,11 +35,35 @@ D6 = ['+-------+',
       '| O   O |',
       '+-------+']
 
-def sacar_dado(numero):
-    dado = []
+
+def mostrar_dados(numero, otro_numero):
+    dado = dado_mostrar(numero)
+    otro_dado  = dado_mostrar(otro_numero)
+    for fila in range(len(dado)):
+        print(f'{dado[fila]}   {otro_dado[fila]}')
+
+def sacar_dado():
+    return random.randint(1,6)
+
+def nombre_dado(numero):
+    nombre = "ICHI"
     match numero:
-        case 1:
-            dado = D1
+        case 2:
+            nombre = "NI"
+        case 3:
+            nombre = "SAN"
+        case 4:
+            nombre = "SHI"
+        case 5:
+            nombre = "GO"
+        case 6:
+            nombre = "ROKU"
+    
+    return nombre
+
+def dado_mostrar(numero):
+    dado = D1
+    match numero:
         case 2:
             dado = D2
         case 3:
@@ -53,75 +77,40 @@ def sacar_dado(numero):
     
     return dado
 
-def sacar_numero_japones(numero):
-    numero_japones = ""
-    match numero:
-        case 1:
-            numero_japones = "ICHI"
-        case 2:
-            numero_japones = "NI"
-        case 3:
-            numero_japones = "SAN"
-        case 4:
-            numero_japones = "SHI"
-        case 5:
-            numero_japones = "GO"
-        case 6:
-            numero_japones = "ROKU"
-    
-    return numero_japones
-    
-            
-            
-
-def impresion_dados(numero1, numero2):
-    dado1 = sacar_dado(numero1)
-    dado2 = sacar_dado(numero2)
-    for n in range(0,len(D1)):
-        print(dado1[n] + "  " + dado2[n])
-
 def play():
+    print("""Este juego de dados tradicional japonés, el croupier, sentado en el suelo, 
+    lanza los dados en un cubilete de babumbu. El jugador debe adivinar si los dados 
+    suman un número par(cho) o impar(han)""")
     dinero = 5000
-    while dinero > 0:
-        print("Tienes " + str(dinero) + " euros. " + "¿Cuanto apuestas (o SALIR)?")
-        jugador = input()
-        if(jugador == "SALIR" or dinero == 0):
+    while dinero != 0:
+        dinero_apostado = input(f'Tienes {dinero} euros. ¿Cuánto apuestas?')
+        if(dinero_apostado == "SALIR"):
             break
-
-        dinero_apostado = int(jugador)
-        print("El crupier...")
-        print("CHO (par) or HAN (impar)?")
-        eleccion_jugador = input()
-        dado_1 = random.randint(1,6)
-        dado_2 = random.randint(1,6)
-        print("El crupier revela los dados:")
-        print(sacar_numero_japones(dado_1) + " - " + sacar_numero_japones(dado_2))
-        impresion_dados(dado_1, dado_2)
-        suma = dado_2 + dado_1
-        if(suma%2 == 0):
-            if(eleccion_jugador == "CHO"):
-                print("HAS GANADO")
-                print("La casa se lleva un " + str(int(dinero_apostado * 0.10)))
-                dinero += dinero_apostado
-            else:
-                print("HAS PERDIDO")
-                dinero -= dinero_apostado
-        else:
-            if(eleccion_jugador == "HAN"):
-                print("HAS GANADO")
-                print("La casa se lleva un " + str(int(dinero_apostado * 0.10)))
-                dinero += dinero_apostado
-            else:
-                print("HAS PERDIDO")
-                dinero -= dinero_apostado
         
+        dinero_apostado = int(dinero_apostado)
+        print("""El crupier hace girar el cubilete y se oye el traqueteo de los dados.
+        El crupier golpea el cubilete contra el suelo, todavia cubriendo los dados y pide tu apuesta""")
 
-
-
-
-
-
-
+        jugador = input("CHO(par) or HAN(impar)?")
+        print("El crupier levanta el cubilete para revelar: ")
+        n_dado_1 = sacar_dado()
+        n_dado_2 = sacar_dado()
+        print(f'{nombre_dado(n_dado_1)}  -  {nombre_dado(n_dado_2)}')
+        print()
+        mostrar_dados(n_dado_1, n_dado_2)
+        
+        ganas = False
+        suma = n_dado_1 + n_dado_2
+        if(jugador == "CHO" and suma%2 == 0 or jugador == "HAN" and suma%2 != 0):
+            ganas = True
+        
+        if(ganas):
+            dinero += dinero_apostado
+            print(f'¡Has ganado! Tienes {dinero} euros')
+            print(f'La casa se lleva {dinero_apostado *(10/100)} euros en tasas')
+        else:
+            dinero -= dinero_apostado
+            print("¡Has perdido!")
 
 
 
